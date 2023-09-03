@@ -1,31 +1,31 @@
-document.getElementById('signin__btn').addEventListener('click', async function(event) {
-	event.preventDefault();
+const signinForm = document.getElementById('signin__form');
+const welcome = document.getElementById('welcome');
+const userId = localStorage.getItem('userId');
 
-	const login = document.querySelector('input[name="login"]').value;
-	const password = document.querySelector('input[name="password"]').value;
+if (userId) {
+  welcome.classList.add('welcome_active');
+  welcome.textContent = `Добро пожаловать, пользователь ${userId}!`;
+}
 
-	const response = await fetch('https://students.netoservices.ru/nestjs-backend/auth', {
-		method: 'POST',
-		body: JSON.stringify({
-			login,
-			password
-		}),
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
+signinForm.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-	const data = await response.json();
+  const formData = new FormData(signinForm);
 
-	if (data.success) {
-		localStorage.setItem('user_id', data.user_id);
-		const welcomeBlock = document.getElementById('welcome');
-		const userIdSpan = document.getElementById('user_id');
-		userIdSpan.textContent = data.user_id;
-		welcomeBlock.classList.add('welcome_active');
-		document.getElementById('signin__form').reset(); // Сброс формы
-	} else {
-		const errorElement = document.getElementById('error');
-		errorElement.textContent = 'Неверный логин/пароль';
-	}
+  fetch('https://students.netoservices.ru/nestjs-backend/auth', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        signinForm.classList.remove('signin_active');
+        welcome.classList.add('welcome_active');
+        welcome.textContent = `Добро пожаловать, пользователь ${data.user_id}!`;
+        localStorage.setItem('user_id', data.user_id);
+        console.log(localStorage.getItem('user_id', data.user_id));
+      } else {
+        alert('Неверный логин/пароль');
+      }
+    })
 });
