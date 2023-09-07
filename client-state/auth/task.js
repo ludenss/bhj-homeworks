@@ -1,4 +1,3 @@
-
 const form = document.querySelector('#signin__form');
 const formLogin = form.login;
 const formPassword = form.password;
@@ -8,7 +7,6 @@ const exit = document.querySelector('.exit')
 let response;
 let invalid = document.createElement('div');
 
-
 if(document.readyState && localStorage.user_id) {
     signIn.classList.remove('signin_active');
     welcome.classList.add('welcome_active');
@@ -16,6 +14,7 @@ if(document.readyState && localStorage.user_id) {
     exit.classList.add('exit_active');
 };
 
+function authorization(object) {
   if(object.success) {
     localStorage.setItem('user_id', object.user_id);
 
@@ -42,10 +41,10 @@ if(document.readyState && localStorage.user_id) {
   };
 };
 
-form.addEventListener('submit', e => { 
+form.addEventListener('submit', e => {
   e.preventDefault();
 
-  if(formLogin.value && formPassword.value) { 
+  if(formLogin.value && formPassword.value) {
     const formData = new FormData(form);
 
     let xhr = new XMLHttpRequest();
@@ -61,4 +60,3 @@ form.addEventListener('submit', e => {
     xhr.send(formData);
   };
 });
-
